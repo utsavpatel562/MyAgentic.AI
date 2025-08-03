@@ -1,4 +1,4 @@
-# 🧠 MyAgentic.AI
+# MyAgentic.AI
 
 **MyAgentic.AI** is a cutting-edge SaaS platform that empowers users to deploy autonomous AI agents tailored to their workflows. Leveraging modern technologies like Next.js, OpenAI, and real-time communication tools, MyAgentic.AI helps automate tasks, enhance productivity, and enable seamless collaboration between humans and intelligent agents.
 
