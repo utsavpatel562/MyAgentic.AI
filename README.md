@@ -10,9 +10,9 @@
 |-------------------|-----------------------------------------------------------------------------------|
 | Frontend          | **Next.js**, **React.js**, **Tailwind CSS**, **Shadcn/UI**                        |
 | Backend           | **ERPC**, **Drizzle ORM**, **Neon DB (PostgreSQL)**                               |
-| Authentication    | **BetterOut**                                                                     |
+| Authentication    | **BetterAuth**                                                                    |
 | Payments          | **Polar**                                                                         |
-| AI Integration    | **OpenAI**, **WholeRabbit**                                                       |
+| AI Integration    | **OpenAI**                                                                        |
 | Real-Time Comms   | **Stream (Video + Messaging)**                                                    |
 | Background Tasks  | **Inngest**                                                                       |
 
