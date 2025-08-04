@@ -1,8 +1,10 @@
+import { Button } from "@/components/ui/button";
+
 export default function Home() {
   return (
     <>
       <div className="text-4xl font-bold text-red-500">
-        <h2>Hello World</h2>
+        <Button className="cursor-pointer">Click Me</Button>
       </div>
     </>
   );
