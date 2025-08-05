@@ -1,10 +1,6 @@
-import { Card } from "@/components/ui/card";
+import { SignUpView } from "@/models/auth/ui/views/sign-up-view";
 
 const SignUp = () => {
-  return (
-    <>
-      <Card>Sign Up Page</Card>
-    </>
-  );
+  return <SignUpView />;
 };
 export default SignUp;
