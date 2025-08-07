@@ -22,6 +22,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+// Schema for validating sign-up form inputs using Zod
 const formSchema = z
   .object({
     name: z.string().min(1, { message: "Name is required" }),
@@ -33,13 +34,16 @@ const formSchema = z
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
-    path: ["confirmPassword"],
+    path: ["confirmPassword"], // Attach error to confirmPassword field
   });
 
+// Main sign-up component
 export const SignUpView = () => {
-  const router = useRouter();
+  const router = useRouter(); // For client-side navigation
   const [error, setError] = useState<string | null>(null);
-  const [loading, setPending] = useState(false);
+  const [loading, setPending] = useState(false); // Loading spinner state
+
+  // Form setup using react-hook-form and Zod validation
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -50,9 +54,12 @@ export const SignUpView = () => {
     },
   });
 
+  // Handles email-based sign-up
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     setError(null);
     setPending(true);
+
+    // Call auth client to register the user
     authClient.signUp.email(
       {
         name: data.name,
@@ -71,6 +78,8 @@ export const SignUpView = () => {
       }
     );
   };
+
+  // Handles social login (Google or GitHub)
   const onSocial = (provider: "github" | "google") => {
     setError(null);
     setPending(true);

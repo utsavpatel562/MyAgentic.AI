@@ -22,6 +22,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+// Validation schema using Zod
 const formSchema = z.object({
   email: z.string().email(),
   password: z.string().min(1, { message: "Password is required" }),
@@ -29,8 +30,10 @@ const formSchema = z.object({
 
 export const SignInView = () => {
   const router = useRouter();
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setPending] = useState(false);
+  const [error, setError] = useState<string | null>(null); // Stores error messages
+  const [loading, setPending] = useState(false); // Indicates loading state
+
+  // Initialize react-hook-form with Zod validation
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -39,9 +42,12 @@ export const SignInView = () => {
     },
   });
 
+  // Handle email/password form submission
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     setError(null);
     setPending(true);
+
+    // Call authClient to log in
     authClient.signIn.email(
       {
         email: data.email,
@@ -60,6 +66,7 @@ export const SignInView = () => {
     );
   };
 
+  // Handle social login (Google or GitHub)
   const onSocial = (provider: "github" | "google") => {
     setError(null);
     setPending(true);
@@ -80,6 +87,7 @@ export const SignInView = () => {
   };
 
   return (
+    // JSX for sign-in form
     <div className="flex flex-col gap-6">
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-2">
