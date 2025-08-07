@@ -26,5 +26,5 @@
 - 💳 **Subscription & Billing** – Integrated Polar payment infrastructure.
 - ⚙️ **Serverless Actions & Jobs** – Event-driven workflows via Inngest.
 - 🌐 **Modern UI/UX** – Built with Tailwind CSS and Shadcn for a sleek, responsive experience.
-- 📦 **Fully Type-Safe APIs** – Using ERPC for backend communication.
+- 📦 **Fully Type-Safe APIs** – Using TRPC for backend communication.
 - 🛢 **Reliable Data Layer** – PostgreSQL on Neon with Drizzle ORM for seamless queries.
