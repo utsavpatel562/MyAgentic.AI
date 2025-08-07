@@ -9,7 +9,7 @@
 | Layer             | Technologies Used                                                                 |
 |-------------------|-----------------------------------------------------------------------------------|
 | Frontend          | **Next.js**, **React.js**, **Tailwind CSS**, **Shadcn/UI**                        |
-| Backend           | **ERPC**, **Drizzle ORM**, **Neon DB (PostgreSQL)**                               |
+| Backend           | **TRPC**, **Drizzle ORM**, **Neon DB (PostgreSQL)**                               |
 | Authentication    | **BetterAuth**                                                                    |
 | Payments          | **Polar**                                                                         |
 | AI Integration    | **OpenAI**                                                                        |
