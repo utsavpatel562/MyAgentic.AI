@@ -68,7 +68,7 @@ export const DashboardSidebar = () => {
                     <SidebarMenuButton
                       asChild
                       className={cn(
-                        "h-10 hover:bg-linear-to-r/oklch border border-transparent cursor-pointer hover:border-[#b65d79]/10 from-sidebar-accent from-50% via-80% via-sidebar/50 to-sidebar/50",
+                        "h-10 hover:bg-linear-to-r/oklch border border-transparent cursor-pointer hover:border-[#b65d79]/10 from-sidebar-accent from-30% via-80% via-sidebar/50 to-sidebar/50",
                         pathname === item.href &&
                           "bg-linear-to-r/oklch border-[#b65d79]/10"
                       )}
@@ -97,7 +97,7 @@ export const DashboardSidebar = () => {
                     <SidebarMenuButton
                       asChild
                       className={cn(
-                        "h-10 hover:bg-linear-to-r/oklch border border-transparent cursor-pointer hover:border-[#b65d79]/10 from-sidebar-accent from-40% via-80% via-sidebar/50 to-sidebar/50",
+                        "h-10 hover:bg-linear-to-r/oklch border border-transparent cursor-pointer hover:border-[#b65d79]/10 from-sidebar-accent from-30% via-80% via-sidebar/50 to-sidebar/50",
                         pathname === item.href &&
                           "bg-linear-to-r/oklch border-[#b65d79]/10"
                       )}
