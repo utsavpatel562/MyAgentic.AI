@@ -6,7 +6,10 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 
 export const AgentsView = () => {
   const trpc = useTRPC();
+  // Get the TRPC client instance to make API calls.
   const { data } = useSuspenseQuery(trpc.agents.getMany.queryOptions());
+  // Call the `agents.getMany` API using React Query's Suspense-enabled fetching.
+  // The `queryOptions()` method provides the required configuration for React Query.
 
   return <div>{JSON.stringify(data, null, 2)}</div>;
 };
