@@ -10,7 +10,11 @@ import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
 const Page = async () => {
+  // Get a QueryClient instance (used by React Query to manage cached data)
   const queryClient = getQueryClient();
+
+  // Prefetch the "agents.getMany" query so that data is available before rendering
+  // Using `void` here ignores the promise return value
   void queryClient.prefetchQuery(trpc.agents.getMany.queryOptions());
   return (
     <>

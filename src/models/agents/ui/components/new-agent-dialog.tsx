@@ -4,6 +4,9 @@ interface NewAgentDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
+// NewAgentDialog functional component.
+// This component displays a dialog for creating a new agent.
+// It uses the ResponsiveDialog component internally.
 export const NewAgentDialog = ({ open, onOpenChange }: NewAgentDialogProps) => {
   return (
     <>
