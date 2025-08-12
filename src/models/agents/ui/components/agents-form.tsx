@@ -1,6 +1,5 @@
 import { useTRPC } from "@/trpc/client";
 import { AgentGetOne } from "../../types";
-import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -18,6 +17,7 @@ import { GeneratedAvatar } from "@/components/generate-avatar";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 interface AgentFormProps {
   onSuccess?: () => void;
@@ -25,36 +25,54 @@ interface AgentFormProps {
   initialValue?: AgentGetOne;
 }
 export const AgentForm = ({
-  onSuccess,
-  onCancel,
-  initialValues,
+  onSuccess, // Callback triggered after successful creation or update
+  onCancel, // Callback triggered after cancelation
+  initialValues, // Optional initial values to pre-fill the form (used for editing)
 }: AgentFormProps) => {
   const trpc = useTRPC();
-  const router = useRouter();
   const queryClient = useQueryClient();
 
+  // Mutation hook for creating a new agent
   const createAgent = useMutation(
     trpc.agents.create.mutationOptions({
-      onSuccess: () => {},
-      onError: () => {},
+      onSuccess: async () => {
+        // Invalidate queries to refresh the agents list after creation
+        await queryClient.invalidateQueries(trpc.agents.getMany.queryOptions());
+
+        // If editing an existing agent, also invalidate the individual agent's query
+        if (initialValues?.id) {
+          await queryClient.invalidateQueries(
+            trpc.agents.getOne.queryOptions({ id: initialValues.id })
+          );
+        }
+        onSuccess?.();
+      },
+      // Show error toast notification if mutation fails
+      onError: (error) => {
+        toast.error(error.message);
+      },
     })
   );
 
+  // Initialize form with react-hook-form and connect Zod schema for validation
   const form = useForm<z.infer<typeof agentInsertSchema>>({
     resolver: zodResolver(agentInsertSchema),
     defaultValues: {
+      // Pre-fill form fields if editing existing agent, otherwise empty strings
       name: initialValues?.name ?? "",
       instructions: initialValues?.instructions ?? "",
     },
   });
 
-  const isEdit = !!initialValues?.id;
-  const isPending = createAgent.isPending;
+  const isEdit = !!initialValues?.id; // Flag to check if this form is for editing or creating
+  const isPending = createAgent.isPending; // Flag to disable buttons while mutation is in progress
 
+  // Handler for form submission
   const onSubmit = (values: z.infer<typeof agentInsertSchema>) => {
     if (isEdit) {
       console.log("TODO: updatedAgent");
     } else {
+      // Call create mutation for new agent
       createAgent.mutate(values);
     }
   };
