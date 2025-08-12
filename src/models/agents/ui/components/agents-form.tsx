@@ -12,9 +12,12 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { GeneratedAvatar } from "@/components/generate-avatar";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 
 interface AgentFormProps {
   onSuccess?: () => void;
@@ -70,11 +73,43 @@ export const AgentForm = ({
             <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} placeholder="e.g. Coding Expert" />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
+        <FormField
+          name="instructions"
+          control={form.control}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Instructions</FormLabel>
+              <FormControl>
+                <Textarea
+                  {...field}
+                  placeholder="e.g. You are a helpful coding expert that can answer questions and help with coding problems."
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <div className="flex justify-between gap-x-2">
+          {onCancel && (
+            <Button
+              variant={"ghost"}
+              disabled={isPending}
+              type="button"
+              onClick={() => onCancel()}
+            >
+              Cancel
+            </Button>
+          )}
+          <Button className="" disabled={isPending} type="submit">
+            {isEdit ? "Update" : "Create"}
+          </Button>
+        </div>
       </form>
     </Form>
   );
