@@ -11,7 +11,7 @@ export const columns: ColumnDef<AgentGetOne>[] = [
   {
     accessorKey: "name",
     header: "Agent Name",
-    cell: ({ row }) => {
+    cell: ({ row }) => (
       <div className="flex flex-col gap-y-1">
         <div className="flex items-center gap-x-2">
           <GeneratedAvatar
@@ -20,7 +20,7 @@ export const columns: ColumnDef<AgentGetOne>[] = [
             className="size-6"
           />
         </div>
-      </div>;
-    },
+      </div>
+    ),
   },
 ];
