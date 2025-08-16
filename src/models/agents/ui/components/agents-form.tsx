@@ -37,7 +37,9 @@ export const AgentForm = ({
     trpc.agents.create.mutationOptions({
       onSuccess: async () => {
         // Invalidate queries to refresh the agents list after creation
-        await queryClient.invalidateQueries(trpc.agents.getMany.queryOptions());
+        await queryClient.invalidateQueries(
+          trpc.agents.getMany.queryOptions({})
+        );
 
         // If editing an existing agent, also invalidate the individual agent's query
         if (initialValues?.id) {

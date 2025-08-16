@@ -10,14 +10,14 @@ import { EmptyState } from "@/components/emptyState";
 export const AgentsView = () => {
   const trpc = useTRPC();
   // Get the TRPC client instance to make API calls.
-  const { data } = useSuspenseQuery(trpc.agents.getMany.queryOptions());
+  const { data } = useSuspenseQuery(trpc.agents.getMany.queryOptions({}));
   // Call the `agents.getMany` API using React Query's Suspense-enabled fetching.
   // The `queryOptions()` method provides the required configuration for React Query.
 
   return (
     <div className="flex-1 pb-4 px-4 md:px-8 flex flex-col gap-y-4">
-      <DataTable data={data} columns={columns} />
-      {data.length === 0 && (
+      <DataTable data={data.items} columns={columns} />
+      {data.items.length === 0 && (
         <EmptyState
           title="Create your first agent"
           description="Create an agent to join your meetings. Each agent will follow your instructions and interact with participants during the call."

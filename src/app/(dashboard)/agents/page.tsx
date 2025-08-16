@@ -26,7 +26,7 @@ const Page = async () => {
 
   // Prefetch the "agents.getMany" query so that data is available before rendering
   // Using `void` here ignores the promise return value
-  void queryClient.prefetchQuery(trpc.agents.getMany.queryOptions());
+  void queryClient.prefetchQuery(trpc.agents.getMany.queryOptions({}));
   return (
     <>
       <AgentsListHeader />
