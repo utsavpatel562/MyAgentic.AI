@@ -7,10 +7,11 @@ import { DataTable } from "../components/data-table";
 import { columns } from "../components/columns";
 import { EmptyState } from "@/components/emptyState";
 import { useAgentFilters } from "../../hooks/use-agents-filter";
+import { DataPagination } from "../components/data-pagination";
 
 export const AgentsView = () => {
   const trpc = useTRPC();
-  const [filters] = useAgentFilters();
+  const [filters, setFilters] = useAgentFilters();
   // Get the TRPC client instance to make API calls.
   const { data } = useSuspenseQuery(
     trpc.agents.getMany.queryOptions({
@@ -23,6 +24,11 @@ export const AgentsView = () => {
   return (
     <div className="flex-1 pb-4 px-4 md:px-8 flex flex-col gap-y-4">
       <DataTable data={data.items} columns={columns} />
+      <DataPagination
+        page={filters.page}
+        totalPages={data.totalPages}
+        onPageChange={(page) => setFilters({ page })}
+      />
       {data.items.length === 0 && (
         <EmptyState
           title="Create your first agent"

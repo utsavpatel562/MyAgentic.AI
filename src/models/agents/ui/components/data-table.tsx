@@ -9,17 +9,20 @@ import {
 
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 
+// Define the props for the DataTable component
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   onRowClick?: (row: TData) => void;
 }
 
+// Generic DataTable component that works with any type of data (TData) and values (TValue)
 export function DataTable<TData, TValue>({
   columns,
   data,
   onRowClick,
 }: DataTableProps<TData, TValue>) {
+  // Initialize the table instance using React Table hook
   const table = useReactTable({
     data,
     columns,

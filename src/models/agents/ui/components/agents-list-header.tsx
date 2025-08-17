@@ -7,10 +7,15 @@ import { useAgentFilters } from "../../hooks/use-agents-filter";
 import AgentsSearchFilter from "./agents-search-filter";
 import { DEFAULT_PAGE } from "@/constants";
 import { MdOutlineCancel } from "react-icons/md";
+
+// Header component for the agents list page
 export const AgentsListHeader = () => {
+  // Using custom filter hook that returns [filters, setFilters]
   const [filters, setFilters] = useAgentFilters();
+  // State to control whether the "New Agent" dialog is open or closed
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
+  // Check if any filter has been applied (currently only checks "search")
   const isAnyFilterModified = !!filters.search;
   const onClearFilters = () => {
     setFilters({

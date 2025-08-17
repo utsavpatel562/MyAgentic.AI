@@ -1,4 +1,5 @@
 import { auth } from "@/lib/auth";
+import { loadSearchParams } from "@/models/agents/params";
 import { AgentsListHeader } from "@/models/agents/ui/components/agents-list-header";
 import {
   AgentsView,
@@ -9,10 +10,20 @@ import { getQueryClient, trpc } from "@/trpc/server";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import type { SearchParams } from "nuqs";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
-const Page = async () => {
+// `searchParams` is a Promise that will eventually resolve to SearchParams.
+interface Props {
+  searchParams: Promise<SearchParams>;
+}
+
+// Define an async server component (or page) that receives `searchParams` as a prop.
+const Page = async ({ searchParams }: Props) => {
+  const filters = await loadSearchParams(searchParams);
+
+  // It uses the `auth.api.getSession` method, and passes request headers
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -26,7 +37,11 @@ const Page = async () => {
 
   // Prefetch the "agents.getMany" query so that data is available before rendering
   // Using `void` here ignores the promise return value
-  void queryClient.prefetchQuery(trpc.agents.getMany.queryOptions({}));
+  void queryClient.prefetchQuery(
+    trpc.agents.getMany.queryOptions({
+      ...filters,
+    })
+  );
   return (
     <>
       <AgentsListHeader />
