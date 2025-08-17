@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import { TRPCReactProvider } from "@/trpc/client";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
+import { NuqsAdapter } from "nuqs/adapters/next";
 
 const inter = Inter({
   variable: "--font-geist-sans",
@@ -20,16 +21,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <TRPCReactProvider>
-      <html lang="en">
-        <head>
-          <link rel="icon" type="image/x-icon" href="/logo.png" />
-        </head>
-        <body className={`${inter.className} antialiased`}>
-          <Toaster />
-          {children}
-        </body>
-      </html>
-    </TRPCReactProvider>
+    <NuqsAdapter>
+      <TRPCReactProvider>
+        <html lang="en">
+          <head>
+            <link rel="icon" type="image/x-icon" href="/logo.png" />
+          </head>
+          <body className={`${inter.className} antialiased`}>
+            <Toaster />
+            {children}
+          </body>
+        </html>
+      </TRPCReactProvider>
+    </NuqsAdapter>
   );
 }

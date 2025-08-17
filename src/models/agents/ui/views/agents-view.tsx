@@ -6,11 +6,17 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { DataTable } from "../components/data-table";
 import { columns } from "../components/columns";
 import { EmptyState } from "@/components/emptyState";
+import { useAgentFilters } from "../../hooks/use-agents-filter";
 
 export const AgentsView = () => {
   const trpc = useTRPC();
+  const [filters] = useAgentFilters();
   // Get the TRPC client instance to make API calls.
-  const { data } = useSuspenseQuery(trpc.agents.getMany.queryOptions({}));
+  const { data } = useSuspenseQuery(
+    trpc.agents.getMany.queryOptions({
+      ...filters,
+    })
+  );
   // Call the `agents.getMany` API using React Query's Suspense-enabled fetching.
   // The `queryOptions()` method provides the required configuration for React Query.
 

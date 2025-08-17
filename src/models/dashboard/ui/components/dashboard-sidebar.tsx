@@ -54,8 +54,8 @@ export const DashboardSidebar = () => {
             )}
           >
             <Link href={item.href}>
-              <item.icon className="size-5" />
-              <span className="text-md font-medium tracking-tight">
+              <item.icon className="size-5 text-slate-200" />
+              <span className="text-md text-slate-200 font-medium tracking-tight">
                 {item.label}
               </span>
             </Link>

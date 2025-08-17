@@ -3,8 +3,21 @@ import { Button } from "@/components/ui/button";
 import { HiPlusSm } from "react-icons/hi";
 import { NewAgentDialog } from "./new-agent-dialog";
 import { useState } from "react";
+import { useAgentFilters } from "../../hooks/use-agents-filter";
+import AgentsSearchFilter from "./agents-search-filter";
+import { DEFAULT_PAGE } from "@/constants";
+import { MdOutlineCancel } from "react-icons/md";
 export const AgentsListHeader = () => {
+  const [filters, setFilters] = useAgentFilters();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const isAnyFilterModified = !!filters.search;
+  const onClearFilters = () => {
+    setFilters({
+      search: "",
+      page: DEFAULT_PAGE,
+    });
+  };
   return (
     <>
       <NewAgentDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />
@@ -15,6 +28,15 @@ export const AgentsListHeader = () => {
             <HiPlusSm className="size-5" />
             New Agent
           </Button>
+        </div>
+        <div className="flex items-center gap-x-2 p-1">
+          <AgentsSearchFilter />
+          {isAnyFilterModified && (
+            <Button onClick={onClearFilters} variant={"outline"}>
+              <MdOutlineCancel />
+              Clear
+            </Button>
+          )}
         </div>
       </div>
     </>
