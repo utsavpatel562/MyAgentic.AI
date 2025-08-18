@@ -1,9 +1,7 @@
 import { useTRPC } from "@/trpc/client";
-import { AgentGetOne } from "../../types";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { agentInsertSchema } from "../../schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -13,34 +11,47 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { GeneratedAvatar } from "@/components/generate-avatar";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { meetingInsertSchema } from "../../schema";
+import { MeetingGetOne } from "../../types";
+import { useState } from "react";
+import { CommandSelect } from "@/components/command-select";
+import { GeneratedAvatar } from "@/components/generate-avatar";
 
-interface AgentFormProps {
-  onSuccess?: () => void;
+interface MeetingFormProps {
+  onSuccess?: (id?: string) => void;
   onCancel?: () => void;
-  initialValues?: AgentGetOne;
+  initialValues?: MeetingGetOne;
 }
-export const AgentForm = ({
+export const MeetingForm = ({
   onSuccess, // Callback triggered after successful creation or update
   onCancel, // Callback triggered after cancelation
   initialValues, // Optional initial values to pre-fill the form (used for editing)
-}: AgentFormProps) => {
+}: MeetingFormProps) => {
   const trpc = useTRPC();
   const queryClient = useQueryClient();
 
+  const [open, setOpen] = useState(false);
+  const [agentSearch, setAgentSearch] = useState("");
+
+  const agents = useQuery(
+    trpc.agents.getMany.queryOptions({
+      pageSize: 100,
+      search: agentSearch,
+    })
+  );
+
   // Mutation hook for creating a new agent
-  const createAgent = useMutation(
-    trpc.agents.create.mutationOptions({
-      onSuccess: async () => {
+  const createMeeting = useMutation(
+    trpc.meetings.create.mutationOptions({
+      onSuccess: async (data) => {
         // Invalidate queries to refresh the agents list after creation
         await queryClient.invalidateQueries(
-          trpc.agents.getMany.queryOptions({})
+          trpc.meetings.getMany.queryOptions({})
         );
-        onSuccess?.();
+        onSuccess?.(data.id);
       },
       // Show error toast notification if mutation fails
       onError: (error) => {
@@ -51,18 +62,18 @@ export const AgentForm = ({
 
   // Edit agent logic
 
-  const updateAgent = useMutation(
-    trpc.agents.update.mutationOptions({
+  const updateMeeting = useMutation(
+    trpc.meetings.update.mutationOptions({
       onSuccess: async () => {
         // Invalidate queries to refresh the agents list after creation
         await queryClient.invalidateQueries(
-          trpc.agents.getMany.queryOptions({})
+          trpc.meetings.getMany.queryOptions({})
         );
 
         // If editing an existing agent, also invalidate the individual agent's query
         if (initialValues?.id) {
           await queryClient.invalidateQueries(
-            trpc.agents.getOne.queryOptions({ id: initialValues.id })
+            trpc.meetings.getOne.queryOptions({ id: initialValues.id })
           );
         }
         onSuccess?.();
@@ -75,35 +86,30 @@ export const AgentForm = ({
   );
 
   // Initialize form with react-hook-form and connect Zod schema for validation
-  const form = useForm<z.infer<typeof agentInsertSchema>>({
-    resolver: zodResolver(agentInsertSchema),
+  const form = useForm<z.infer<typeof meetingInsertSchema>>({
+    resolver: zodResolver(meetingInsertSchema),
     defaultValues: {
       // Pre-fill form fields if editing existing agent, otherwise empty strings
       name: initialValues?.name ?? "",
-      instructions: initialValues?.instructions ?? "",
+      agentId: initialValues?.agentId ?? "",
     },
   });
 
   const isEdit = !!initialValues?.id; // Flag to check if this form is for editing or creating
-  const isPending = createAgent.isPending || updateAgent.isPending; // Flag to disable buttons while mutation is in progress
+  const isPending = createMeeting.isPending || updateMeeting.isPending; // Flag to disable buttons while mutation is in progress
 
   // Handler for form submission
-  const onSubmit = (values: z.infer<typeof agentInsertSchema>) => {
+  const onSubmit = (values: z.infer<typeof meetingInsertSchema>) => {
     if (isEdit) {
-      updateAgent.mutate({ ...values, id: initialValues.id });
+      updateMeeting.mutate({ ...values, id: initialValues.id });
     } else {
       // Call create mutation for new agent
-      createAgent.mutate(values);
+      createMeeting.mutate(values);
     }
   };
   return (
     <Form {...form}>
       <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
-        <GeneratedAvatar
-          seed={form.watch("name")}
-          variant={"botttsNeutral"}
-          className="border size-16"
-        />
         <FormField
           name="name"
           control={form.control}
@@ -113,7 +119,7 @@ export const AgentForm = ({
               <FormControl>
                 <Input
                   {...field}
-                  placeholder="e.g. Coding Expert"
+                  placeholder="e.g. Business Consultations"
                   autoComplete="off"
                 />
               </FormControl>
@@ -121,22 +127,40 @@ export const AgentForm = ({
             </FormItem>
           )}
         />
+
         <FormField
-          name="instructions"
+          name="agentId"
           control={form.control}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Instructions</FormLabel>
+              <FormLabel>Agent</FormLabel>
               <FormControl>
-                <Textarea
-                  {...field}
-                  placeholder="e.g. You are a helpful coding expert that can answer questions and help with coding problems."
+                <CommandSelect
+                  options={(agents.data?.items ?? []).map((agent) => ({
+                    id: agent.id,
+                    value: agent.id,
+                    children: (
+                      <div className="flex items-center gap-x-2">
+                        <GeneratedAvatar
+                          seed={agent.name}
+                          variant={"botttsNeutral"}
+                          className="border size-6"
+                        />
+                        <span>{agent.name}</span>
+                      </div>
+                    ),
+                  }))}
+                  onSelect={field.onChange}
+                  onSearch={setAgentSearch}
+                  value={field.value}
+                  placeholder="Select an agent"
                 />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
+
         <div className="flex justify-between gap-x-2">
           {onCancel && (
             <Button

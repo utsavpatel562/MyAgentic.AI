@@ -5,9 +5,51 @@ import { z } from "zod";
 import { and, count, desc, eq, getTableColumns, ilike } from "drizzle-orm";
 import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE, MIN_PAGE_SIZE } from "@/constants";
 import { TRPCError } from "@trpc/server";
+import { meetingInsertSchema, meetingsUpdateSchema } from "../schema";
 
 export const meetingsRouter = createTRPCRouter({
+    update: protectedProcedure.input(meetingsUpdateSchema).mutation(async({ctx, input})=> {
    
+       /**
+        * - Update the meeting record
+        * - Only update if meeting belongs to the current user (ctx.auth.user.id)
+        * - Returns the updated meeting
+       */
+   
+           const [updatedMeeting] = await db.update(meetings).set(input)
+           .where(
+               and(
+                   eq(meetings.id, input.id),
+                   eq(meetings.userId, ctx.auth.user.id)
+               )
+           )
+           .returning()
+           // If no meeting was updated -> throw error
+           if(!updatedMeeting) {
+               throw new TRPCError( {
+                   code: "NOT_FOUND",
+                   message: "Meeting not found",
+               })
+           }
+           return updatedMeeting;
+       }),
+    create: protectedProcedure.input(meetingInsertSchema).mutation(async ({input, ctx})=> {
+    
+        /**
+         * Insert a new agent.
+         * - Spread input fields
+         * - Attach the current user’s ID (ownership enforcement)
+        */
+    
+            const [createdMeeting] = await db
+            .insert(meetings).values({
+                ...input,
+                userId: ctx.auth.user.id
+            })
+            .returning();
+            return createdMeeting;
+        }),
+
     // "getMany" endpoint: Fetches all agents from the database.
     getOne : protectedProcedure.input(z.object({id : z.string()})).query(async ({input, ctx})=> {
         // Select all columns from the "agents" table.

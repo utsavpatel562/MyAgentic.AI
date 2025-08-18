@@ -9,7 +9,7 @@ export const MeetingView = () => {
 
   return (
     <>
-      <div>{JSON.stringify(data)}</div>
+      <div>TODO:data table</div>
     </>
   );
 };
