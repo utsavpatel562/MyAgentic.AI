@@ -9,6 +9,13 @@ import { TRPCError } from "@trpc/server";
 
 export const agentsRouter = createTRPCRouter({
     update: protectedProcedure.input(agentUpdateSchema).mutation(async({ctx, input})=> {
+
+    /**
+     * Update the agent record
+     * - Only update if agent belongs to the current user (ctx.auth.user.id)
+     * - Returns the updated agent
+    */
+
         const [updatedAgent] = await db.update(agents).set(input)
         .where(
             and(
@@ -17,6 +24,7 @@ export const agentsRouter = createTRPCRouter({
             )
         )
         .returning()
+        // If no agent was updated -> throw error
         if(!updatedAgent) {
             throw new TRPCError( {
                 code: "NOT_FOUND",
@@ -26,6 +34,13 @@ export const agentsRouter = createTRPCRouter({
         return updatedAgent;
     }),
     remove: protectedProcedure.input(z.object({id: z.string()})).mutation(async({ctx, input})=> {
+
+    /**
+     * Delete the agent record
+     * - Only delete if agent belongs to the current user
+     * - Returns the deleted agent
+    */
+
         const [removeAgent] = await db.delete(agents).where(
             and(
                 eq(agents.id, input.id),
@@ -33,6 +48,7 @@ export const agentsRouter = createTRPCRouter({
             ),
         )
         .returning();
+        // If no agent was deleted -> throw error
         if (!removeAgent) {
             throw new TRPCError( {
                 code: "NOT_FOUND",
@@ -67,7 +83,14 @@ if(!existingAgent) {
         }))
         .query(async ( {ctx, input})=> {
         const  {search, page, pageSize} =  input;
-        // Select all columns from the "agents" table.
+
+    /**
+     * Fetch paginated agents for the logged-in user.
+     * - Selects all columns from "agents"
+     * - Adds a placeholder meetingCount (currently hardcoded `5`)
+     * - Filters by search term if provided
+     */
+
         const data = await db.select( 
         {
             meetingCount: sql<number>`5`,
@@ -83,6 +106,7 @@ if(!existingAgent) {
         .limit(pageSize)
         .offset((page - 1) * pageSize)
 
+        // Count total agents for pagination
         const [total] = await db
         .select({count: count()})
         .from(agents).where (
@@ -92,6 +116,7 @@ if(!existingAgent) {
             )
         )
 
+        // Calculate total pages
         const totalPages = Math.ceil(total.count / pageSize)
 
         return {
@@ -101,6 +126,13 @@ if(!existingAgent) {
         }
     }),
     create: protectedProcedure.input(agentInsertSchema).mutation(async ({input, ctx})=> {
+
+    /**
+     * Insert a new agent.
+     * - Spread input fields
+     * - Attach the current user’s ID (ownership enforcement)
+    */
+
         const [createdAgent] = await db
         .insert(agents).values({
             ...input,

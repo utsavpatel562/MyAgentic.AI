@@ -22,7 +22,7 @@ import { toast } from "sonner";
 interface AgentFormProps {
   onSuccess?: () => void;
   onCancel?: () => void;
-  initialValue?: AgentGetOne;
+  initialValues?: AgentGetOne;
 }
 export const AgentForm = ({
   onSuccess, // Callback triggered after successful creation or update
@@ -35,6 +35,24 @@ export const AgentForm = ({
   // Mutation hook for creating a new agent
   const createAgent = useMutation(
     trpc.agents.create.mutationOptions({
+      onSuccess: async () => {
+        // Invalidate queries to refresh the agents list after creation
+        await queryClient.invalidateQueries(
+          trpc.agents.getMany.queryOptions({})
+        );
+        onSuccess?.();
+      },
+      // Show error toast notification if mutation fails
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    })
+  );
+
+  // Edit agent logic
+
+  const updateAgent = useMutation(
+    trpc.agents.update.mutationOptions({
       onSuccess: async () => {
         // Invalidate queries to refresh the agents list after creation
         await queryClient.invalidateQueries(
@@ -67,12 +85,12 @@ export const AgentForm = ({
   });
 
   const isEdit = !!initialValues?.id; // Flag to check if this form is for editing or creating
-  const isPending = createAgent.isPending; // Flag to disable buttons while mutation is in progress
+  const isPending = createAgent.isPending || updateAgent.isPending; // Flag to disable buttons while mutation is in progress
 
   // Handler for form submission
   const onSubmit = (values: z.infer<typeof agentInsertSchema>) => {
     if (isEdit) {
-      console.log("TODO: updatedAgent");
+      updateAgent.mutate({ ...values, id: initialValues.id });
     } else {
       // Call create mutation for new agent
       createAgent.mutate(values);
@@ -126,7 +144,7 @@ export const AgentForm = ({
               Cancel
             </Button>
           )}
-          <Button className="" disabled={isPending} type="submit">
+          <Button disabled={isPending} type="submit">
             {isEdit ? "Update" : "Create"}
           </Button>
         </div>
