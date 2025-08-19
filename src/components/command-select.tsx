@@ -37,6 +37,7 @@ export const CommandSelect = ({
   return (
     <>
       <Button
+        onClick={() => setOpen(true)}
         type={"button"}
         variant={"outline"}
         className={cn(
@@ -48,7 +49,11 @@ export const CommandSelect = ({
         <div>{selectedOption?.children ?? placeholder}</div>
         <HiChevronUpDown />
       </Button>
-      <CommandResponsiveDialog open={open} onOpenChange={setOpen}>
+      <CommandResponsiveDialog
+        open={open}
+        onOpenChange={setOpen}
+        shouldFilter={!onSearch}
+      >
         <CommandInput placeholder="Search..." onValueChange={onSearch} />
         <CommandList>
           <CommandEmpty>
