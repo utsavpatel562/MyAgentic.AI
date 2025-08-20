@@ -7,6 +7,7 @@ import { useAgentFilters } from "../../hooks/use-agents-filter";
 import AgentsSearchFilter from "./agents-search-filter";
 import { DEFAULT_PAGE } from "@/constants";
 import { MdOutlineCancel } from "react-icons/md";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 // Header component for the agents list page
 export const AgentsListHeader = () => {
@@ -34,15 +35,18 @@ export const AgentsListHeader = () => {
             New Agent
           </Button>
         </div>
-        <div className="flex items-center gap-x-2 p-1">
-          <AgentsSearchFilter />
-          {isAnyFilterModified && (
-            <Button onClick={onClearFilters} variant={"outline"}>
-              <MdOutlineCancel />
-              Clear
-            </Button>
-          )}
-        </div>
+        <ScrollArea>
+          <div className="flex items-center gap-x-2 p-1">
+            <AgentsSearchFilter />
+            {isAnyFilterModified && (
+              <Button onClick={onClearFilters} variant={"outline"}>
+                <MdOutlineCancel />
+                Clear
+              </Button>
+            )}
+          </div>
+          <ScrollBar orientation={"horizontal"} />
+        </ScrollArea>
       </div>
     </>
   );

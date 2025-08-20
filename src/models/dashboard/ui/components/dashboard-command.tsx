@@ -14,7 +14,7 @@ export const DashboardCommand = ({ open, setOpen }: Props) => {
     <CommandResponsiveDialog open={open} onOpenChange={setOpen}>
       <CommandInput className="Find a meeting or agent" />
       <CommandList>
-        <CommandItem>Test</CommandItem>
+        <CommandItem>This module is under development</CommandItem>
       </CommandList>
     </CommandResponsiveDialog>
   );
