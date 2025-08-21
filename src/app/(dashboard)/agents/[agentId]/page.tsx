@@ -12,9 +12,12 @@ interface Props {
   params: Promise<{ agentId: string }>;
 }
 const Page = async ({ params }: Props) => {
+  // Extract agentId from route params
   const { agentId } = await params;
 
+  // Initialize query client (used for SSR data prefetching)
   const queryClient = getQueryClient();
+  // Prefetch agent data on the server so it’s ready before hydration
   void queryClient.prefetchQuery(
     trpc.agents.getOne.queryOptions({ id: agentId })
   );
