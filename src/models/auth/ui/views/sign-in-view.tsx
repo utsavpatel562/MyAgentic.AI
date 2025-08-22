@@ -21,6 +21,7 @@ import { IoLogoGithub } from "react-icons/io";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 // Validation schema using Zod
 const formSchema = z.object({
@@ -200,7 +201,7 @@ export const SignInView = () => {
             </form>
           </Form>
           <div className="bg-radial from-rose-600 to-rose-900 relative hidden md:flex flex-col gap-y-4 items-center justify-center">
-            <img src={"/logo.png"} alt="logo" className="h-[92px] w-[92px]" />
+            <Image src={"/logo.png"} alt="logo" className="h-[92px] w-[92px]" />
             <p className="text-2xl font-semibold text-white">MYAGENTIC.AI</p>
           </div>
         </CardContent>

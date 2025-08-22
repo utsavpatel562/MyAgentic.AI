@@ -30,11 +30,11 @@ const Developer = () => {
                 Full Stack Developer
               </p>
               <p className="text-sm md:text-base font-light md:py-3 py-2 md:text-left">
-                Hi, I'm developer of MyAgentic.AI, SaaS platform designed to
-                build and deploy autonomous AI agents tailored to your specific
-                workflows. Built with a modern tech stack, it allows you to
-                automate complex tasks, enhance productivity, and facilitate
-                seamless human-agent collaboration.
+                Hi, I&apos;m developer of MyAgentic.AI, SaaS platform designed
+                to build and deploy autonomous AI agents tailored to your
+                specific workflows. Built with a modern tech stack, it allows
+                you to automate complex tasks, enhance productivity, and
+                facilitate seamless human-agent collaboration.
               </p>
 
               {/* Buttons */}
