@@ -129,6 +129,18 @@ export const meetingsRouter = createTRPCRouter({
                 })
             }
 
+            await streamVideo.upsertUsers([
+                {
+                    id: existingAgent.id,
+                    name: existingAgent.name,
+                    role: "user",
+                    image: generateAvatarUri({
+                        seed: existingAgent.name,
+                        variant: "botttsNeutral",
+                    })
+                }
+            ])
+
             return createdMeeting;
         }),
 
